@@ -1,0 +1,76 @@
+name: CI (Integracao Continua)
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  laravel-tests:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: event_api_test
+          POSTGRES_USER: laravel
+          POSTGRES_PASSWORD: secret
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.4'
+        extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, pdo_pgsql, redis
+        coverage: none
+
+    - name: Copiar arquivo de configuracao .env.testing
+      run: php -r "copy('.env.example', '.env');"
+
+    - name: Atualizar variaveis no .env para Testes
+      run: |
+        sed -i 's/DB_CONNECTION=sqlite/DB_CONNECTION=pgsql/g' .env
+        sed -i 's/# DB_HOST=127.0.0.1/DB_HOST=127.0.0.1/g' .env
+        sed -i 's/# DB_PORT=3306/DB_PORT=5432/g' .env
+        sed -i 's/# DB_DATABASE=laravel/DB_DATABASE=event_api_test/g' .env
+        sed -i 's/# DB_USERNAME=root/DB_USERNAME=laravel/g' .env
+        sed -i 's/# DB_PASSWORD=/DB_PASSWORD=secret/g' .env
+        sed -i 's/QUEUE_CONNECTION=database/QUEUE_CONNECTION=sync/g' .env
+        sed -i 's/CACHE_STORE=database/CACHE_STORE=redis/g' .env
+        sed -i 's/REDIS_HOST=127.0.0.1/REDIS_HOST=127.0.0.1/g' .env
+
+    - name: Instalar Dependencias do Composer
+      run: composer install --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+    - name: Gerar Chave do Aplicativo (App Key)
+      run: php artisan key:generate
+
+    - name: Executar Migrations
+      run: php artisan migrate --force
+
+    - name: Rodar Pint (Linter de Estilo de Codigo)
+      run: ./vendor/bin/pint --test
+
+    - name: Executar Testes com Pest PHP
+      run: ./vendor/bin/pest
