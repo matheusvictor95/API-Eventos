@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\RsvpFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -9,11 +10,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 #[Fillable([
     'event_id',
-    'user_id'
+    'user_id',
 ])]
 class Rsvp extends Model
 {
-    /** @use HasFactory<\Database\Factories\RsvpFactory> */
+    /** @use HasFactory<RsvpFactory> */
     use HasFactory;
 
     /**

@@ -7,7 +7,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Event>
+ * @extends Factory<Event>
  */
 class EventFactory extends Factory
 {
@@ -24,7 +24,7 @@ class EventFactory extends Factory
             'user_id' => User::factory(),
             'title' => $this->faker->sentence(4),
             'description' => $this->faker->paragraph,
-            'location' => $this->faker->city . ', ' . $this->faker->streetAddress,
+            'location' => $this->faker->city.', '.$this->faker->streetAddress,
             'starts_at' => now()->addDays(2),
             'ends_at' => now()->addDays(2)->addHours(3),
             'capacity' => $this->faker->numberBetween(5, 50),

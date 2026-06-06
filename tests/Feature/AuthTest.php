@@ -17,11 +17,11 @@ test('usuário pode se registrar com sucesso', function () {
             'message',
             'user' => ['id', 'name', 'email'],
             'access_token',
-            'token_type'
+            'token_type',
         ]);
 
     $this->assertDatabaseHas('users', [
-        'email' => 'matheus@example.com'
+        'email' => 'matheus@example.com',
     ]);
 });
 
@@ -41,7 +41,7 @@ test('usuário pode fazer login com credenciais válidas', function () {
             'message',
             'user',
             'access_token',
-            'token_type'
+            'token_type',
         ]);
 });
 
@@ -76,6 +76,6 @@ test('usuário autenticado pode fazer logout', function () {
 
     $response->assertStatus(200)
         ->assertJson([
-            'message' => 'Logout realizado com sucesso. Token revogado.'
+            'message' => 'Logout realizado com sucesso. Token revogado.',
         ]);
 });

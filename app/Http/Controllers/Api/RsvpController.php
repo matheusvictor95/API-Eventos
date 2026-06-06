@@ -30,8 +30,8 @@ class RsvpController extends Controller
 
         // 1. Verificar se o usuário já se inscreveu no evento
         $exists = Rsvp::where('event_id', $event->id)
-                      ->where('user_id', $user->id)
-                      ->exists();
+            ->where('user_id', $user->id)
+            ->exists();
 
         if ($exists) {
             return response()->json([
@@ -70,8 +70,8 @@ class RsvpController extends Controller
         $user = $request->user();
 
         $rsvp = Rsvp::where('event_id', $event->id)
-                    ->where('user_id', $user->id)
-                    ->first();
+            ->where('user_id', $user->id)
+            ->first();
 
         if (! $rsvp) {
             return response()->json([
