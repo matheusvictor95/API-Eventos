@@ -61,7 +61,13 @@ jobs:
         sed -i 's/REDIS_HOST=127.0.0.1/REDIS_HOST=127.0.0.1/g' .env
 
     - name: Instalar Dependencias do Composer
-      run: composer install --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist --no-cache
+      run: composer install --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+    - name: Check PHP Version
+      run: php --version
+  
+    - name: Clear Composer cache
+      run: composer clear-cache
 
     - name: Gerar Chave do Aplicativo (App Key)
       run: php artisan key:generate
