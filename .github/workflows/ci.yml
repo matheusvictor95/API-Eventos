@@ -66,9 +66,6 @@ jobs:
     - name: Instalar Dependencias do Composer
       run: composer install --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
-    - name: Check PHP Version
-      run: php --version
-  
     - name: Gerar Chave do Aplicativo (App Key)
       run: php artisan key:generate
 
