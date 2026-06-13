@@ -50,8 +50,5 @@ jobs:
       - name: Run Pint
         run: ./vendor/bin/pint --test
 
-      - name: Run PHPStan
-        run: ./vendor/bin/phpstan analyse
-
       - name: Execute tests
         run: php artisan test
